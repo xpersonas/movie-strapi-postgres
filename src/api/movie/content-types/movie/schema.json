@@ -1,0 +1,76 @@
+{
+  "kind": "collectionType",
+  "collectionName": "movies",
+  "info": {
+    "singularName": "movie",
+    "pluralName": "movies",
+    "displayName": "movie",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "ratings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::rating.rating",
+      "mappedBy": "movie"
+    },
+    "runtime": {
+      "type": "string"
+    },
+    "poster": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "release_date": {
+      "type": "date"
+    },
+    "year": {
+      "type": "integer"
+    },
+    "genre": {
+      "type": "string"
+    },
+    "plot_summary": {
+      "type": "text"
+    },
+    "language": {
+      "type": "string"
+    },
+    "imdb_rating": {
+      "type": "decimal"
+    },
+    "rotten_tomatoes_score": {
+      "type": "integer"
+    },
+    "metacritic_score": {
+      "type": "integer"
+    },
+    "imdb_vote_count": {
+      "type": "biginteger"
+    },
+    "box_office": {
+      "type": "biginteger"
+    },
+    "imdb_id": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "rated": {
+      "type": "string"
+    }
+  }
+}
