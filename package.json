@@ -12,7 +12,6 @@
   "devDependencies": {},
   "dependencies": {
     "@strapi/plugin-cloud": "5.8.0",
-    "@strapi/plugin-documentation": "^5.8.1",
     "@strapi/plugin-graphql": "^5.8.0",
     "@strapi/plugin-users-permissions": "5.8.0",
     "@strapi/strapi": "5.8.0",
