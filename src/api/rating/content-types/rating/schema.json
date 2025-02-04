@@ -32,6 +32,9 @@
     },
     "imdb_id": {
       "type": "string"
+    },
+    "guilty_pleasure": {
+      "type": "boolean"
     }
   }
 }
