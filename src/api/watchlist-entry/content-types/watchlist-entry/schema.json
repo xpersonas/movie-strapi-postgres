@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "watchlist_entries",
+  "info": {
+    "singularName": "watchlist-entry",
+    "pluralName": "watchlist-entries",
+    "displayName": "Watchlist Entry"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "movie": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::movie.movie",
+      "inversedBy": "watchlist_entries"
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "watchlist_entries"
+    }
+  }
+}

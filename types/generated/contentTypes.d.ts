@@ -408,6 +408,10 @@ export interface ApiMovieMovie extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    watchlist_entries: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::watchlist-entry.watchlist-entry'
+    >;
     year: Schema.Attribute.Integer;
   };
 }
@@ -439,6 +443,39 @@ export interface ApiRatingRating extends Struct.CollectionTypeSchema {
     publishedAt: Schema.Attribute.DateTime;
     review: Schema.Attribute.Text;
     score: Schema.Attribute.Decimal;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    users_permissions_user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+  };
+}
+
+export interface ApiWatchlistEntryWatchlistEntry
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'watchlist_entries';
+  info: {
+    displayName: 'Watchlist Entry';
+    pluralName: 'watchlist-entries';
+    singularName: 'watchlist-entry';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::watchlist-entry.watchlist-entry'
+    > &
+      Schema.Attribute.Private;
+    movie: Schema.Attribute.Relation<'manyToOne', 'api::movie.movie'>;
+    publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -946,6 +983,10 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 3;
       }>;
+    watchlist_entries: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::watchlist-entry.watchlist-entry'
+    >;
   };
 }
 
@@ -961,6 +1002,7 @@ declare module '@strapi/strapi' {
       'admin::user': AdminUser;
       'api::movie.movie': ApiMovieMovie;
       'api::rating.rating': ApiRatingRating;
+      'api::watchlist-entry.watchlist-entry': ApiWatchlistEntryWatchlistEntry;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

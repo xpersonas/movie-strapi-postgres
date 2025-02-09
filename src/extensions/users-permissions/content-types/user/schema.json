@@ -70,6 +70,12 @@
       "relation": "oneToMany",
       "target": "api::rating.rating",
       "mappedBy": "users_permissions_user"
+    },
+    "watchlist_entries": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::watchlist-entry.watchlist-entry",
+      "mappedBy": "users_permissions_user"
     }
   }
 }

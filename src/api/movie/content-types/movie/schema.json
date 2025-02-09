@@ -71,6 +71,12 @@
     },
     "rated": {
       "type": "string"
+    },
+    "watchlist_entries": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::watchlist-entry.watchlist-entry",
+      "mappedBy": "movie"
     }
   }
 }
