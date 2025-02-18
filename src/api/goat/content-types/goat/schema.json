@@ -25,7 +25,8 @@
       "inversedBy": "goats"
     },
     "order": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     }
   }
 }

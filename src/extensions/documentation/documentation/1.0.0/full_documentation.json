@@ -2,19 +2,19 @@
   "openapi": "3.0.0",
   "info": {
     "version": "1.0.0",
-    "title": "DOCUMENTATION",
-    "description": "",
+    "title": "Movie API Documentation",
+    "description": "Documentation for the Movie API",
     "termsOfService": "YOUR_TERMS_OF_SERVICE_URL",
     "contact": {
-      "name": "TEAM",
-      "email": "contact-email@something.io",
-      "url": "mywebsite.io"
+      "name": "Your team",
+      "email": "your-email@example.com",
+      "url": "https://your-website.com"
     },
     "license": {
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2025-02-18T00:19:53.347Z"
+    "x-generation-date": "2025-02-18T03:29:06.614Z"
   },
   "x-strapi-config": {
     "plugins": [

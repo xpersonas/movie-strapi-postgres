@@ -388,7 +388,7 @@ export interface ApiGoatGoat extends Struct.CollectionTypeSchema {
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::goat.goat'> &
       Schema.Attribute.Private;
     movie: Schema.Attribute.Relation<'manyToOne', 'api::movie.movie'>;
-    order: Schema.Attribute.Integer;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
