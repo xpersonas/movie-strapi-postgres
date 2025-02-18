@@ -1,0 +1,31 @@
+{
+  "kind": "collectionType",
+  "collectionName": "goats",
+  "info": {
+    "singularName": "goat",
+    "pluralName": "goats",
+    "displayName": "GOAT",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "goats"
+    },
+    "movie": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::movie.movie",
+      "inversedBy": "goats"
+    },
+    "order": {
+      "type": "integer"
+    }
+  }
+}

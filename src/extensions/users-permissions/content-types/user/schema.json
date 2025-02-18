@@ -76,6 +76,12 @@
       "relation": "oneToMany",
       "target": "api::watchlist-entry.watchlist-entry",
       "mappedBy": "users_permissions_user"
+    },
+    "goats": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::goat.goat",
+      "mappedBy": "users_permissions_user"
     }
   }
 }

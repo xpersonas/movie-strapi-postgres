@@ -369,11 +369,42 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiGoatGoat extends Struct.CollectionTypeSchema {
+  collectionName: 'goats';
+  info: {
+    description: '';
+    displayName: 'GOAT';
+    pluralName: 'goats';
+    singularName: 'goat';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::goat.goat'> &
+      Schema.Attribute.Private;
+    movie: Schema.Attribute.Relation<'manyToOne', 'api::movie.movie'>;
+    order: Schema.Attribute.Integer;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    users_permissions_user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+  };
+}
+
 export interface ApiMovieMovie extends Struct.CollectionTypeSchema {
   collectionName: 'movies';
   info: {
     description: '';
-    displayName: 'movie';
+    displayName: 'Movie';
     pluralName: 'movies';
     singularName: 'movie';
   };
@@ -386,6 +417,7 @@ export interface ApiMovieMovie extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     genre: Schema.Attribute.String;
+    goats: Schema.Attribute.Relation<'oneToMany', 'api::goat.goat'>;
     imdb_id: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
@@ -420,7 +452,7 @@ export interface ApiRatingRating extends Struct.CollectionTypeSchema {
   collectionName: 'ratings';
   info: {
     description: '';
-    displayName: 'rating';
+    displayName: 'Rating';
     pluralName: 'ratings';
     singularName: 'rating';
   };
@@ -955,6 +987,7 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
+    goats: Schema.Attribute.Relation<'oneToMany', 'api::goat.goat'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1000,6 +1033,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::goat.goat': ApiGoatGoat;
       'api::movie.movie': ApiMovieMovie;
       'api::rating.rating': ApiRatingRating;
       'api::watchlist-entry.watchlist-entry': ApiWatchlistEntryWatchlistEntry;

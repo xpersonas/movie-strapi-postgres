@@ -4,7 +4,7 @@
   "info": {
     "singularName": "movie",
     "pluralName": "movies",
-    "displayName": "movie",
+    "displayName": "Movie",
     "description": ""
   },
   "options": {
@@ -76,6 +76,12 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::watchlist-entry.watchlist-entry",
+      "mappedBy": "movie"
+    },
+    "goats": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::goat.goat",
       "mappedBy": "movie"
     }
   }
