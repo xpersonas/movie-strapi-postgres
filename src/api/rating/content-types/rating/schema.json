@@ -16,7 +16,7 @@
       "type": "text"
     },
     "score": {
-      "type": "decimal"
+      "type": "integer"
     },
     "movie": {
       "type": "relation",

@@ -369,11 +369,46 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiCollectionCollection extends Struct.CollectionTypeSchema {
+  collectionName: 'collections';
+  info: {
+    description: '';
+    displayName: 'Collection';
+    pluralName: 'collections';
+    singularName: 'collection';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::collection.collection'
+    > &
+      Schema.Attribute.Private;
+    movies: Schema.Attribute.Relation<'manyToMany', 'api::movie.movie'>;
+    name: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user_collections: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::user-collection.user-collection'
+    >;
+  };
+}
+
 export interface ApiGoatGoat extends Struct.CollectionTypeSchema {
   collectionName: 'goats';
   info: {
     description: '';
-    displayName: 'GOAT';
+    displayName: 'Goats';
     pluralName: 'goats';
     singularName: 'goat';
   };
@@ -413,6 +448,10 @@ export interface ApiMovieMovie extends Struct.CollectionTypeSchema {
   };
   attributes: {
     box_office: Schema.Attribute.BigInteger;
+    collections: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::collection.collection'
+    >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -474,7 +513,45 @@ export interface ApiRatingRating extends Struct.CollectionTypeSchema {
     movie: Schema.Attribute.Relation<'manyToOne', 'api::movie.movie'>;
     publishedAt: Schema.Attribute.DateTime;
     review: Schema.Attribute.Text;
-    score: Schema.Attribute.Decimal;
+    score: Schema.Attribute.Integer;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    users_permissions_user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+  };
+}
+
+export interface ApiUserCollectionUserCollection
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'user_collections';
+  info: {
+    displayName: 'User Collection';
+    pluralName: 'user-collections';
+    singularName: 'user-collection';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    collection: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::collection.collection'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    last_updated: Schema.Attribute.DateTime;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::user-collection.user-collection'
+    > &
+      Schema.Attribute.Private;
+    movie_order: Schema.Attribute.JSON;
+    publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -489,7 +566,7 @@ export interface ApiWatchlistEntryWatchlistEntry
   extends Struct.CollectionTypeSchema {
   collectionName: 'watchlist_entries';
   info: {
-    displayName: 'Watchlist Entry';
+    displayName: 'Watchlist';
     pluralName: 'watchlist-entries';
     singularName: 'watchlist-entry';
   };
@@ -1010,6 +1087,10 @@ export interface PluginUsersPermissionsUser
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    user_collections: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::user-collection.user-collection'
+    >;
     username: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.Unique &
@@ -1033,9 +1114,11 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::collection.collection': ApiCollectionCollection;
       'api::goat.goat': ApiGoatGoat;
       'api::movie.movie': ApiMovieMovie;
       'api::rating.rating': ApiRatingRating;
+      'api::user-collection.user-collection': ApiUserCollectionUserCollection;
       'api::watchlist-entry.watchlist-entry': ApiWatchlistEntryWatchlistEntry;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

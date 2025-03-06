@@ -83,6 +83,12 @@
       "relation": "oneToMany",
       "target": "api::goat.goat",
       "mappedBy": "movie"
+    },
+    "collections": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::collection.collection",
+      "mappedBy": "movies"
     }
   }
 }

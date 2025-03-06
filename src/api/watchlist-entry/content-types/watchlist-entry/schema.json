@@ -4,7 +4,7 @@
   "info": {
     "singularName": "watchlist-entry",
     "pluralName": "watchlist-entries",
-    "displayName": "Watchlist Entry"
+    "displayName": "Watchlist"
   },
   "options": {
     "draftAndPublish": true

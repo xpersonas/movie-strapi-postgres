@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "user_collections",
+  "info": {
+    "singularName": "user-collection",
+    "pluralName": "user-collections",
+    "displayName": "User Collection"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "user_collections"
+    },
+    "collection": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::collection.collection",
+      "inversedBy": "user_collections"
+    },
+    "movie_order": {
+      "type": "json"
+    },
+    "last_updated": {
+      "type": "datetime"
+    }
+  }
+}
