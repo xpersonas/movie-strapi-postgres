@@ -1,16 +1,19 @@
 module.exports = {
     async afterCreate(event) {
-      strapi.log.info("afterCreate event triggered");
-      await processRatingEvent(event);
+        strapi.log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~afterCreate event triggered");
+        strapi.log.info(`Event info: ${JSON.stringify(event)}`);
+        await processRatingEvent(event);
     },
     
     async afterUpdate(event) {
-      strapi.log.info("afterUpdate event triggered");
+      strapi.log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~afterUpdate event triggered");
+      strapi.log.info(`Event info: ${JSON.stringify(event)}`);
       await processRatingEvent(event);
     },
     
     async beforeDelete(event) {
-      strapi.log.info("beforeDelete event triggered");
+      strapi.log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~beforeDelete event triggered");
+      strapi.log.info(`Event info: ${JSON.stringify(event)}`);
       try {
         const { id } = event.params.where;
         if (!id) {
@@ -110,25 +113,30 @@ module.exports = {
         queryWhere.id = { $ne: excludeRatingId };
       }
       
-      // Get all ratings for this movie
+      // Get all ratings for this movie with their IDs to ensure uniqueness
       const ratings = await db.query('api::rating.rating').findMany({
-        select: ['score'],
+        select: ['id', 'score'],  // Include ID to differentiate between ratings
         where: queryWhere
       });
       
       strapi.log.info(`Found ${ratings.length} ratings for movie ${movieId}${excludeMessage}`);
+      strapi.log.info(`Ratings details: ${JSON.stringify(ratings)}`);
       
-      // Calculate average
+      // Calculate average with explicit iteration to ensure all ratings are counted
       let totalScore = 0;
       const count = ratings.length;
       
-      for (const rating of ratings) {
+      // Log each rating individually for debugging
+      ratings.forEach((rating, index) => {
+        strapi.log.info(`Rating ${index + 1}: ID=${rating.id}, Score=${rating.score}`);
         totalScore += rating.score;
-      }
+      });
       
       const average_rating = count > 0 
         ? parseFloat((totalScore / count).toFixed(1)) 
         : 0;
+      
+      strapi.log.info(`Calculation: Total=${totalScore}, Count=${count}, Average=${average_rating}`);
       
       // Update the movie
       await db.query('api::movie.movie').update({
