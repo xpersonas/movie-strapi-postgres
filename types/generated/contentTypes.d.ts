@@ -447,6 +447,7 @@ export interface ApiMovieMovie extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    average_rating: Schema.Attribute.Decimal;
     box_office: Schema.Attribute.BigInteger;
     collections: Schema.Attribute.Relation<
       'manyToMany',
@@ -476,6 +477,7 @@ export interface ApiMovieMovie extends Struct.CollectionTypeSchema {
     rotten_tomatoes_score: Schema.Attribute.Integer;
     runtime: Schema.Attribute.String;
     title: Schema.Attribute.String;
+    total_ratings: Schema.Attribute.BigInteger;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

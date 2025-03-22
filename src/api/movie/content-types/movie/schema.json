@@ -25,14 +25,15 @@
       "type": "string"
     },
     "poster": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
     },
     "release_date": {
       "type": "date"
@@ -89,6 +90,12 @@
       "relation": "manyToMany",
       "target": "api::collection.collection",
       "mappedBy": "movies"
+    },
+    "average_rating": {
+      "type": "decimal"
+    },
+    "total_ratings": {
+      "type": "biginteger"
     }
   }
 }
