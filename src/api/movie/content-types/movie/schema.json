@@ -96,6 +96,9 @@
     },
     "total_ratings": {
       "type": "biginteger"
+    },
+    "last_review_date": {
+      "type": "datetime"
     }
   }
 }
