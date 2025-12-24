@@ -464,6 +464,7 @@ export interface ApiMovieMovie extends Struct.CollectionTypeSchema {
     imdb_rating: Schema.Attribute.Decimal;
     imdb_vote_count: Schema.Attribute.BigInteger;
     language: Schema.Attribute.String;
+    last_review_date: Schema.Attribute.DateTime;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::movie.movie'> &
       Schema.Attribute.Private;

@@ -13,7 +13,6 @@ module.exports = {
         select: ['id', 'documentId', 'score'],
         where: {
           $and: [
-            { publishedAt: { $notNull: true } }, // Only published ratings to weed out drafts or revisions.
             { movie: { $notNull: true } }
           ]
         },
@@ -39,17 +38,28 @@ module.exports = {
         movieRatings[movieId].count += 1;
       }
 
-      // Update each movie with its aggregate rating data
+      // Update each movie with its aggregate rating data while keeping existing updatedAt
       for (const [movieId, data] of Object.entries(movieRatings)) {
         const average_rating = data.count > 0 
           ? parseFloat((data.totalScore / data.count).toFixed(2)) 
           : 0;
-          
+        
+        const movie = await db.query('api::movie.movie').findOne({
+          where: { documentId: movieId },
+          select: ['updatedAt'],
+        });
+
+        if (!movie) {
+          console.warn(`Movie ${movieId} not found while aggregating ratings`);
+          continue;
+        }
+
         await db.query('api::movie.movie').update({
           where: { documentId: movieId },
           data: {
             average_rating,
-            total_ratings: data.count
+            total_ratings: data.count,
+            updatedAt: movie.updatedAt,
           },
           publish: true,
         });
