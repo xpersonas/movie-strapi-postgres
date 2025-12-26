@@ -13,7 +13,7 @@ services:
       sizeGB: 1
     envVars:
       - key: NODE_VERSION
-        value: ~16.13.0
+        value: 20.x
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
