@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "goat_snapshot_items",
+  "info": {
+    "singularName": "goat-snapshot-item",
+    "pluralName": "goat-snapshot-items",
+    "displayName": "Goat Snapshot Item",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "snapshot": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::goat-snapshot.goat-snapshot"
+    },
+    "movie": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::movie.movie"
+    },
+    "order": {
+      "type": "integer"
+    }
+  }
+}

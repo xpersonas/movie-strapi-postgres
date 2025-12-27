@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "goat_snapshots",
+  "info": {
+    "singularName": "goat-snapshot",
+    "pluralName": "goat-snapshots",
+    "displayName": "Goat Snapshot"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "capturedAt": {
+      "type": "datetime",
+      "default": "{{ now }}"
+    },
+    "title": {
+      "type": "string"
+    }
+  }
+}

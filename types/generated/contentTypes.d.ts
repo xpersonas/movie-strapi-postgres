@@ -404,6 +404,76 @@ export interface ApiCollectionCollection extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiGoatSnapshotItemGoatSnapshotItem
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'goat_snapshot_items';
+  info: {
+    description: '';
+    displayName: 'Goat Snapshot Item';
+    pluralName: 'goat-snapshot-items';
+    singularName: 'goat-snapshot-item';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::goat-snapshot-item.goat-snapshot-item'
+    > &
+      Schema.Attribute.Private;
+    movie: Schema.Attribute.Relation<'oneToOne', 'api::movie.movie'>;
+    order: Schema.Attribute.Integer;
+    publishedAt: Schema.Attribute.DateTime;
+    snapshot: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::goat-snapshot.goat-snapshot'
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiGoatSnapshotGoatSnapshot
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'goat_snapshots';
+  info: {
+    displayName: 'Goat Snapshot';
+    pluralName: 'goat-snapshots';
+    singularName: 'goat-snapshot';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    capturedAt: Schema.Attribute.DateTime &
+      Schema.Attribute.DefaultTo<'{{ now }}'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::goat-snapshot.goat-snapshot'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    title: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user: Schema.Attribute.Relation<
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+  };
+}
+
 export interface ApiGoatGoat extends Struct.CollectionTypeSchema {
   collectionName: 'goats';
   info: {
@@ -499,7 +569,7 @@ export interface ApiRatingRating extends Struct.CollectionTypeSchema {
     singularName: 'rating';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -1118,6 +1188,8 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::collection.collection': ApiCollectionCollection;
+      'api::goat-snapshot-item.goat-snapshot-item': ApiGoatSnapshotItemGoatSnapshotItem;
+      'api::goat-snapshot.goat-snapshot': ApiGoatSnapshotGoatSnapshot;
       'api::goat.goat': ApiGoatGoat;
       'api::movie.movie': ApiMovieMovie;
       'api::rating.rating': ApiRatingRating;
