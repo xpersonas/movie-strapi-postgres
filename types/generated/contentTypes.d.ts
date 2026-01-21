@@ -587,6 +587,7 @@ export interface ApiRatingRating extends Struct.CollectionTypeSchema {
     publishedAt: Schema.Attribute.DateTime;
     review: Schema.Attribute.Text;
     score: Schema.Attribute.Integer;
+    season: Schema.Attribute.Relation<'manyToOne', 'api::season.season'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -594,6 +595,94 @@ export interface ApiRatingRating extends Struct.CollectionTypeSchema {
       'manyToOne',
       'plugin::users-permissions.user'
     >;
+  };
+}
+
+export interface ApiSeasonSeason extends Struct.CollectionTypeSchema {
+  collectionName: 'seasons';
+  info: {
+    description: 'A season of a show (rateable unit)';
+    displayName: 'Season';
+    pluralName: 'seasons';
+    singularName: 'season';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    air_date: Schema.Attribute.Date;
+    average_rating: Schema.Attribute.Decimal;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    episode_count: Schema.Attribute.Integer;
+    last_review_date: Schema.Attribute.DateTime;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::season.season'
+    > &
+      Schema.Attribute.Private;
+    plot_summary: Schema.Attribute.Text;
+    poster: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    publishedAt: Schema.Attribute.DateTime;
+    ratings: Schema.Attribute.Relation<'oneToMany', 'api::rating.rating'>;
+    raw: Schema.Attribute.JSON;
+    season_number: Schema.Attribute.Integer & Schema.Attribute.Required;
+    show: Schema.Attribute.Relation<'manyToOne', 'api::show.show'>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    tmdb_season_key: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    total_ratings: Schema.Attribute.BigInteger;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    year: Schema.Attribute.Integer;
+  };
+}
+
+export interface ApiShowShow extends Struct.CollectionTypeSchema {
+  collectionName: 'shows';
+  info: {
+    description: 'TV show (rate by season)';
+    displayName: 'Show';
+    pluralName: 'shows';
+    singularName: 'show';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    average_rating: Schema.Attribute.Decimal;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    first_air_date: Schema.Attribute.Date;
+    genre: Schema.Attribute.String;
+    imdb_id: Schema.Attribute.String;
+    imdb_rating: Schema.Attribute.Decimal;
+    imdb_vote_count: Schema.Attribute.BigInteger;
+    last_review_date: Schema.Attribute.DateTime;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::show.show'> &
+      Schema.Attribute.Private;
+    plot_summary: Schema.Attribute.Text;
+    poster: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    publishedAt: Schema.Attribute.DateTime;
+    rated: Schema.Attribute.String;
+    raw: Schema.Attribute.JSON;
+    seasons: Schema.Attribute.Relation<'oneToMany', 'api::season.season'>;
+    slug: Schema.Attribute.UID<'title'>;
+    start_year: Schema.Attribute.Integer;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    tmdb_id: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    total_ratings: Schema.Attribute.BigInteger;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -1193,6 +1282,8 @@ declare module '@strapi/strapi' {
       'api::goat.goat': ApiGoatGoat;
       'api::movie.movie': ApiMovieMovie;
       'api::rating.rating': ApiRatingRating;
+      'api::season.season': ApiSeasonSeason;
+      'api::show.show': ApiShowShow;
       'api::user-collection.user-collection': ApiUserCollectionUserCollection;
       'api::watchlist-entry.watchlist-entry': ApiWatchlistEntryWatchlistEntry;
       'plugin::content-releases.release': PluginContentReleasesRelease;

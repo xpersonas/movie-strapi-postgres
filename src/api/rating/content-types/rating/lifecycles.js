@@ -1,6 +1,16 @@
 const aggregatingMovies = new Set();
 
 module.exports = {
+    async beforeCreate(event) {
+        strapi.log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~beforeCreate event triggered");
+        await validateRatingReference(event.params.data);
+    },
+
+    async beforeUpdate(event) {
+        strapi.log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~beforeUpdate event triggered");
+        await validateRatingReference(event.params.data);
+    },
+
     async afterCreate(event) {
         strapi.log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~afterCreate event triggered");
         strapi.log.info(`Event info: ${JSON.stringify(event)}`);
@@ -25,30 +35,49 @@ module.exports = {
         
         const rating = await strapi.db.query('api::rating.rating').findOne({
           where: { id },
-          populate: { movie: true }
+          populate: { movie: true, season: true }
         });
         
-        if (!rating || !rating.movie) {
-          strapi.log.info("Could not find rating or its associated movie before deletion");
+        if (!rating) {
+          strapi.log.info("Could not find rating before deletion");
           return;
         }
         
-        const movieDocumentId = rating.movie.documentId;
-        if (!movieDocumentId) {
-          strapi.log.info("No movie documentId found before deletion");
-          return;
+        // Handle movie deletion
+        if (rating.movie) {
+          const movieId = rating.movie.id;
+          if (movieId) {
+            strapi.log.info(`Found movie before deletion: ${JSON.stringify(rating.movie)}`);
+            await updateMovieRatings(movieId, id);
+          }
         }
         
-        strapi.log.info(`Found movie before deletion: ${JSON.stringify(rating.movie)}`);
-        
-        // Recalculate the aggregates while excluding the rating being deleted
-        await updateMovieRatings(movieDocumentId, id);
+        // Handle season deletion
+        if (rating.season) {
+          const seasonId = rating.season.id;
+          if (seasonId) {
+            strapi.log.info(`Found season before deletion: ${JSON.stringify(rating.season)}`);
+            await updateSeasonRatings(seasonId, id);
+          }
+        }
       } catch (error) {
         strapi.log.error("Error in beforeDelete:", error);
       }
     }
   };
   
+  /**
+   * Validate that a rating references exactly one of movie or season
+   */
+  async function validateRatingReference(data) {
+    const hasMovie = !!data.movie;
+    const hasSeason = !!data.season;
+
+    if (hasMovie === hasSeason) {
+      throw new Error('Rating must reference exactly one of movie or season');
+    }
+  }
+
   /**
    * Process a rating event and update the associated movie's ratings
    */
@@ -60,28 +89,38 @@ module.exports = {
         return;
       }
       
-      // Get the rating with its movie relation fully populated
+      // Get the rating with its movie and season relations fully populated
       const rating = await strapi.db.query('api::rating.rating').findOne({
         where: { id: ratingId },
-        populate: { movie: true }
+        populate: { movie: true, season: true }
       });
       
-      if (!rating || !rating.movie) {
-        strapi.log.info("Could not find rating or its associated movie");
+      if (!rating) {
+        strapi.log.info("Could not find rating");
         return;
       }
       
-      strapi.log.info(`Found movie: ${JSON.stringify(rating.movie)}`);
-      
-      // Get the movie documentId (use documentId for consistency with Strapi v5)
-      const movieDocumentId = rating.movie.documentId;
-      if (!movieDocumentId) {
-        strapi.log.info("No movie documentId found");
-        return;
+      // Update movie ratings if movie is present
+      if (rating.movie) {
+        const movieId = rating.movie.id;
+        if (movieId) {
+          strapi.log.info(`Found movie: ${JSON.stringify(rating.movie)}`);
+          await updateMovieRatings(movieId);
+        }
       }
       
-      // Update the movie ratings (no rating to exclude)
-      await updateMovieRatings(movieDocumentId);
+      // Update season ratings if season is present
+      if (rating.season) {
+        const seasonId = rating.season.id;
+        if (seasonId) {
+          strapi.log.info(`Found season: ${JSON.stringify(rating.season)}`);
+          await updateSeasonRatings(seasonId);
+        }
+      }
+      
+      if (!rating.movie && !rating.season) {
+        strapi.log.info("Rating has no associated movie or season");
+      }
     } catch (error) {
       strapi.log.error("Error processing rating event:");
       strapi.log.error(error);
@@ -90,41 +129,31 @@ module.exports = {
   
   /**
    * Update rating averages for a specific movie
-   * @param {string} movieDocumentId - The documentId of the movie to update
+   * @param {number|string} movieId - The ID of the movie to update
    * @param {number|string|null} excludeRatingId - Optional ID of a rating to exclude (for beforeDelete)
    */
-  async function updateMovieRatings(movieDocumentId, excludeRatingId = null) {
-    if (!movieDocumentId) {
-      strapi.log.error("No movie documentId provided to updateMovieRatings function");
+  async function updateMovieRatings(movieId, excludeRatingId = null) {
+    if (!movieId) {
+      strapi.log.error("No movie ID provided to updateMovieRatings function");
       return;
     }
 
-    if (aggregatingMovies.has(movieDocumentId)) {
-      strapi.log.info(`Aggregation already in progress for movie ${movieDocumentId}, skipping concurrent run`);
+    if (aggregatingMovies.has(movieId)) {
+      strapi.log.info(`Aggregation already in progress for movie ${movieId}, skipping concurrent run`);
       return;
     }
 
-    aggregatingMovies.add(movieDocumentId);
+    aggregatingMovies.add(movieId);
     
     try {
       const { db } = strapi;
       const excludeMessage = excludeRatingId ? ` (excluding rating ${excludeRatingId})` : '';
-      strapi.log.info(`Aggregating ratings for movie ${movieDocumentId}${excludeMessage}...`);
+      strapi.log.info(`Aggregating ratings for movie ${movieId}${excludeMessage}...`);
       
-      // First, get the movie's internal id for querying ratings
-      const movie = await db.query('api::movie.movie').findOne({
-        where: { documentId: movieDocumentId },
-        select: ['id', 'updatedAt'],
-      });
-      
-      if (!movie) {
-        strapi.log.error(`Movie with documentId ${movieDocumentId} not found`);
-        return;
-      }
-      
-      // Build the query using internal id for relation
+      // Build the query
       const queryWhere = {
-        movie: movie.id
+        publishedAt: { $notNull: true },
+        movie: movieId
       };
       
       // Add exclusion if needed
@@ -138,7 +167,7 @@ module.exports = {
         where: queryWhere
       });
       
-      strapi.log.info(`Found ${ratings.length} ratings for movie ${movieDocumentId}${excludeMessage}`);
+      strapi.log.info(`Found ${ratings.length} ratings for movie ${movieId}${excludeMessage}`);
       strapi.log.info(`Ratings details: ${JSON.stringify(ratings)}`);
       
       // Calculate average with explicit iteration to ensure all ratings are counted
@@ -157,22 +186,89 @@ module.exports = {
       
       strapi.log.info(`Calculation: Total=${totalScore}, Count=${count}, Average=${average_rating}`);
       
-      // Update the movie using documentId, preserving updatedAt but setting last_review_date to now
+      // Update the movie
       await db.query('api::movie.movie').update({
-        where: { documentId: movieDocumentId },
+        where: { id: movieId },
         data: {
           average_rating,
           total_ratings: count,
-          last_review_date: new Date().toISOString(),
-          updatedAt: movie.updatedAt,
+          last_review_date: new Date().toISOString()
         }
       });
       
-      strapi.log.info(`Updated movie ${movieDocumentId} rating: ${average_rating} from ${count} ratings${excludeMessage}`);
+      strapi.log.info(`Updated movie ${movieId} rating: ${average_rating} from ${count} ratings${excludeMessage}`);
     } catch (error) {
-      strapi.log.error(`Failed to update movie ${movieDocumentId} ratings`);
+      strapi.log.error(`Failed to update movie ${movieId} ratings`);
       strapi.log.error(error);
     } finally {
-      aggregatingMovies.delete(movieDocumentId);
+      aggregatingMovies.delete(movieId);
+    }
+  }
+
+  /**
+   * Update rating averages for a specific season
+   * @param {number|string} seasonId - The ID of the season to update
+   * @param {number|string|null} excludeRatingId - Optional ID of a rating to exclude (for beforeDelete)
+   */
+  async function updateSeasonRatings(seasonId, excludeRatingId = null) {
+    if (!seasonId) {
+      strapi.log.error("No season ID provided to updateSeasonRatings function");
+      return;
+    }
+    
+    try {
+      const { db } = strapi;
+      const excludeMessage = excludeRatingId ? ` (excluding rating ${excludeRatingId})` : '';
+      strapi.log.info(`Aggregating ratings for season ${seasonId}${excludeMessage}...`);
+      
+      // Build the query
+      const queryWhere = {
+        publishedAt: { $notNull: true },
+        season: seasonId
+      };
+      
+      // Add exclusion if needed
+      if (excludeRatingId) {
+        queryWhere.id = { $ne: excludeRatingId };
+      }
+      
+      // Get all ratings for this season with their IDs to ensure uniqueness
+      const ratings = await db.query('api::rating.rating').findMany({
+        select: ['id', 'score'],
+        where: queryWhere
+      });
+      
+      strapi.log.info(`Found ${ratings.length} ratings for season ${seasonId}${excludeMessage}`);
+      strapi.log.info(`Ratings details: ${JSON.stringify(ratings)}`);
+      
+      // Calculate average with explicit iteration to ensure all ratings are counted
+      let totalScore = 0;
+      const count = ratings.length;
+      
+      // Log each rating individually for debugging
+      ratings.forEach((rating, index) => {
+        strapi.log.info(`Rating ${index + 1}: ID=${rating.id}, Score=${rating.score}`);
+        totalScore += rating.score;
+      });
+      
+      const average_rating = count > 0 
+        ? parseFloat((totalScore / count).toFixed(1)) 
+        : 0;
+      
+      strapi.log.info(`Calculation: Total=${totalScore}, Count=${count}, Average=${average_rating}`);
+      
+      // Update the season
+      await db.query('api::season.season').update({
+        where: { id: seasonId },
+        data: {
+          average_rating,
+          total_ratings: count
+        }
+      });
+      
+      strapi.log.info(`Updated season ${seasonId} rating: ${average_rating} from ${count} ratings${excludeMessage}`);
+    } catch (error) {
+      strapi.log.error(`Failed to update season ${seasonId} ratings`);
+      strapi.log.error(error);
     }
   }

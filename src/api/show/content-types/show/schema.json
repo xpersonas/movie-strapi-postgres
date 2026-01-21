@@ -1,0 +1,51 @@
+{
+  "kind": "collectionType",
+  "collectionName": "shows",
+  "info": {
+    "singularName": "show",
+    "pluralName": "shows",
+    "displayName": "Show",
+    "description": "TV show (rate by season)"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "title" },
+
+    "tmdb_id": { "type": "integer", "required": true, "unique": true },
+    "imdb_id": { "type": "string" },
+
+    "poster": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images", "files", "videos", "audios"]
+    },
+
+    "first_air_date": { "type": "date" },
+    "start_year": { "type": "integer" },
+
+    "genre": { "type": "string" },
+    "plot_summary": { "type": "text" },
+    "rated": { "type": "string" },
+
+    "imdb_rating": { "type": "decimal" },
+    "imdb_vote_count": { "type": "biginteger" },
+
+    "average_rating": { "type": "decimal" },
+    "total_ratings": { "type": "biginteger" },
+    "last_review_date": { "type": "datetime" },
+
+    "raw": { "type": "json" },
+
+    "seasons": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::season.season",
+      "mappedBy": "show"
+    }
+  }
+}

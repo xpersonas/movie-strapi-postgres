@@ -5,4 +5,5 @@ module.exports = ({ env }) => ({
   apiToken: {
     salt: env('API_TOKEN_SALT'),
   },
+  ...(env('NODE_ENV') === 'development' && { url: '/admin' }),
 });

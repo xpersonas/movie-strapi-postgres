@@ -24,6 +24,12 @@
       "target": "api::movie.movie",
       "inversedBy": "ratings"
     },
+    "season": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::season.season",
+      "inversedBy": "ratings"
+    },
     "users_permissions_user": {
       "type": "relation",
       "relation": "manyToOne",

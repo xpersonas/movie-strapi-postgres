@@ -1,0 +1,53 @@
+{
+  "kind": "collectionType",
+  "collectionName": "seasons",
+  "info": {
+    "singularName": "season",
+    "pluralName": "seasons",
+    "displayName": "Season",
+    "description": "A season of a show (rateable unit)"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": { "type": "string", "required": true },
+
+    "season_number": { "type": "integer", "required": true },
+    "tmdb_season_key": { "type": "string", "required": true, "unique": true },
+
+    "poster": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images", "files", "videos", "audios"]
+    },
+
+    "air_date": { "type": "date" },
+    "year": { "type": "integer" },
+    "episode_count": { "type": "integer" },
+
+    "plot_summary": { "type": "text" },
+
+    "average_rating": { "type": "decimal" },
+    "total_ratings": { "type": "biginteger" },
+    "last_review_date": { "type": "datetime" },
+
+    "raw": { "type": "json" },
+
+    "show": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::show.show",
+      "inversedBy": "seasons"
+    },
+
+    "ratings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::rating.rating",
+      "mappedBy": "season"
+    }
+  }
+}
