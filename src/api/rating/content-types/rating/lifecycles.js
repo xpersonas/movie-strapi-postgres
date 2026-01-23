@@ -186,19 +186,31 @@ module.exports = {
       
       strapi.log.info(`Calculation: Total=${totalScore}, Count=${count}, Average=${average_rating}`);
       
-      // Update the movie
-      await db.query('api::movie.movie').update({
+      // Get the movie to retrieve its documentId
+      const movie = await db.query('api::movie.movie').findOne({
         where: { id: movieId },
+        select: ['documentId']
+      });
+      
+      if (!movie || !movie.documentId) {
+        strapi.log.error(`Could not find movie or documentId for movie ${movieId}`);
+        return;
+      }
+      
+      // Update the movie
+      await strapi.documents('api::movie.movie').update({
+        documentId: movie.documentId,
         data: {
           average_rating,
           total_ratings: count,
           last_review_date: new Date().toISOString()
-        },
-        populate: false
+        }
       });
-      
-      // Publish the changes
-      await strapi.entityService.publish('api::movie.movie', movieId);
+
+      // Publish the movie changes
+      await strapi.documents('api::movie.movie').publish({
+        documentId: movie.documentId
+      });
       
       strapi.log.info(`Updated movie ${movieId} rating: ${average_rating} from ${count} ratings${excludeMessage}`);
     } catch (error) {
@@ -261,18 +273,30 @@ module.exports = {
       
       strapi.log.info(`Calculation: Total=${totalScore}, Count=${count}, Average=${average_rating}`);
       
-      // Update the season
-      await db.query('api::season.season').update({
+      // Get the season to retrieve its documentId
+      const season = await db.query('api::season.season').findOne({
         where: { id: seasonId },
+        select: ['documentId']
+      });
+      
+      if (!season || !season.documentId) {
+        strapi.log.error(`Could not find season or documentId for season ${seasonId}`);
+        return;
+      }
+      
+      // Update the season
+      await strapi.documents('api::season.season').update({
+        documentId: season.documentId,
         data: {
           average_rating,
           total_ratings: count
-        },
-        populate: false
+        }
       });
-      
-      // Publish the changes
-      await strapi.entityService.publish('api::season.season', seasonId);
+
+      // Publish the season changes
+      await strapi.documents('api::season.season').publish({
+        documentId: season.documentId
+      });
       
       strapi.log.info(`Updated season ${seasonId} rating: ${average_rating} from ${count} ratings${excludeMessage}`);
     } catch (error) {
