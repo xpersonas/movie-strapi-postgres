@@ -193,8 +193,12 @@ module.exports = {
           average_rating,
           total_ratings: count,
           last_review_date: new Date().toISOString()
-        }
+        },
+        populate: false
       });
+      
+      // Publish the changes
+      await strapi.entityService.publish('api::movie.movie', movieId);
       
       strapi.log.info(`Updated movie ${movieId} rating: ${average_rating} from ${count} ratings${excludeMessage}`);
     } catch (error) {
@@ -263,8 +267,12 @@ module.exports = {
         data: {
           average_rating,
           total_ratings: count
-        }
+        },
+        populate: false
       });
+      
+      // Publish the changes
+      await strapi.entityService.publish('api::season.season', seasonId);
       
       strapi.log.info(`Updated season ${seasonId} rating: ${average_rating} from ${count} ratings${excludeMessage}`);
     } catch (error) {
