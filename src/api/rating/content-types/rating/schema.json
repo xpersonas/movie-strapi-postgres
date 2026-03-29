@@ -30,6 +30,12 @@
       "target": "api::season.season",
       "inversedBy": "ratings"
     },
+    "book": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::book.book",
+      "inversedBy": "ratings"
+    },
     "users_permissions_user": {
       "type": "relation",
       "relation": "manyToOne",

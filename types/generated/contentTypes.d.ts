@@ -369,6 +369,50 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiBookBook extends Struct.CollectionTypeSchema {
+  collectionName: 'books';
+  info: {
+    description: 'A book (rateable unit)';
+    displayName: 'Book';
+    pluralName: 'books';
+    singularName: 'book';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    authors: Schema.Attribute.JSON;
+    average_rating: Schema.Attribute.Decimal;
+    cover_url: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text;
+    isbn_10: Schema.Attribute.String;
+    isbn_13: Schema.Attribute.String;
+    last_review_date: Schema.Attribute.DateTime;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::book.book'> &
+      Schema.Attribute.Private;
+    page_count: Schema.Attribute.Integer;
+    primary_author: Schema.Attribute.String;
+    primary_author_normalized: Schema.Attribute.String;
+    published_year: Schema.Attribute.Integer;
+    publishedAt: Schema.Attribute.DateTime;
+    publisher: Schema.Attribute.String;
+    ratings: Schema.Attribute.Relation<'oneToMany', 'api::rating.rating'>;
+    source: Schema.Attribute.String;
+    source_id: Schema.Attribute.String;
+    subtitle: Schema.Attribute.String;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    title_normalized: Schema.Attribute.String;
+    total_ratings: Schema.Attribute.BigInteger;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiCollectionCollection extends Struct.CollectionTypeSchema {
   collectionName: 'collections';
   info: {
@@ -572,6 +616,7 @@ export interface ApiRatingRating extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
+    book: Schema.Attribute.Relation<'manyToOne', 'api::book.book'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1276,6 +1321,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::book.book': ApiBookBook;
       'api::collection.collection': ApiCollectionCollection;
       'api::goat-snapshot-item.goat-snapshot-item': ApiGoatSnapshotItemGoatSnapshotItem;
       'api::goat-snapshot.goat-snapshot': ApiGoatSnapshotGoatSnapshot;

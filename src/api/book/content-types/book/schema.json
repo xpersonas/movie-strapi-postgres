@@ -1,0 +1,77 @@
+{
+  "kind": "collectionType",
+  "collectionName": "books",
+  "info": {
+    "singularName": "book",
+    "pluralName": "books",
+    "displayName": "Book",
+    "description": "A book (rateable unit)"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "authors": {
+      "type": "json"
+    },
+    "primary_author": {
+      "type": "string"
+    },
+    "title_normalized": {
+      "type": "string"
+    },
+    "primary_author_normalized": {
+      "type": "string"
+    },
+    "cover_url": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "published_year": {
+      "type": "integer"
+    },
+    "publisher": {
+      "type": "string"
+    },
+    "page_count": {
+      "type": "integer"
+    },
+    "source": {
+      "type": "string"
+    },
+    "source_id": {
+      "type": "string"
+    },
+    "isbn_13": {
+      "type": "string"
+    },
+    "isbn_10": {
+      "type": "string"
+    },
+    "ratings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::rating.rating",
+      "mappedBy": "book"
+    },
+    "average_rating": {
+      "type": "decimal"
+    },
+    "total_ratings": {
+      "type": "biginteger"
+    },
+    "last_review_date": {
+      "type": "datetime"
+    }
+  }
+}
