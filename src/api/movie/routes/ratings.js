@@ -6,9 +6,6 @@ module.exports = {
       method: 'GET',
       path: '/aggregate-ratings',
       handler: 'ratings.aggregateRatings',
-      config: {
-        auth: false
-      }
     }
   ]
 };

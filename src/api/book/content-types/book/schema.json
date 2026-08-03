@@ -8,7 +8,7 @@
     "description": "A book (rateable unit)"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {

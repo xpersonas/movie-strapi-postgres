@@ -378,7 +378,7 @@ export interface ApiBookBook extends Struct.CollectionTypeSchema {
     singularName: 'book';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     authors: Schema.Attribute.JSON;
@@ -422,7 +422,7 @@ export interface ApiCollectionCollection extends Struct.CollectionTypeSchema {
     singularName: 'collection';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -527,7 +527,7 @@ export interface ApiGoatGoat extends Struct.CollectionTypeSchema {
     singularName: 'goat';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -558,7 +558,7 @@ export interface ApiMovieMovie extends Struct.CollectionTypeSchema {
     singularName: 'movie';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     average_rating: Schema.Attribute.Decimal;
@@ -652,7 +652,7 @@ export interface ApiSeasonSeason extends Struct.CollectionTypeSchema {
     singularName: 'season';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     air_date: Schema.Attribute.Date;
@@ -696,7 +696,7 @@ export interface ApiShowShow extends Struct.CollectionTypeSchema {
     singularName: 'show';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     average_rating: Schema.Attribute.Decimal;
@@ -740,7 +740,7 @@ export interface ApiUserCollectionUserCollection
     singularName: 'user-collection';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     collection: Schema.Attribute.Relation<
@@ -778,7 +778,7 @@ export interface ApiWatchlistEntryWatchlistEntry
     singularName: 'watchlist-entry';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;

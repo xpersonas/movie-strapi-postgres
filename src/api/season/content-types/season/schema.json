@@ -8,7 +8,7 @@
     "description": "A season of a show (rateable unit)"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
