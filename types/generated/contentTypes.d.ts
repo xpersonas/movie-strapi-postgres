@@ -630,6 +630,7 @@ export interface ApiRatingRating extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     movie: Schema.Attribute.Relation<'manyToOne', 'api::movie.movie'>;
     publishedAt: Schema.Attribute.DateTime;
+    random_pick: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     review: Schema.Attribute.Text;
     score: Schema.Attribute.Integer;
     season: Schema.Attribute.Relation<'manyToOne', 'api::season.season'>;

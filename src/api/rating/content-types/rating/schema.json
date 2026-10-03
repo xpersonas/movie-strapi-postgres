@@ -47,6 +47,10 @@
     },
     "guilty_pleasure": {
       "type": "boolean"
+    },
+    "random_pick": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

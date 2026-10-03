@@ -2,9 +2,14 @@ const aggregatingMovies = new Set();
 const aggregatingSeasons = new Set();
 const aggregatingBooks = new Set();
 
+// Ratings made from the random movie generator are backdated so they sort
+// behind ratings for movies that were deliberately searched out.
+const RANDOM_PICK_BACKDATE_YEARS = 5;
+
 module.exports = {
   async beforeCreate(event) {
     validateRatingReference(event.params.data);
+    backdateRandomPick(event.params.data);
   },
 
   async beforeUpdate(event) {
@@ -100,6 +105,20 @@ async function validateRatingReference(data) {
   if (relationsCount !== 1) {
     throw new Error('Rating must reference exactly one of movie, season, or book');
   }
+}
+
+/**
+ * Push createdAt/updatedAt back for ratings made from a random pick
+ */
+function backdateRandomPick(data) {
+  if (!data?.random_pick) {
+    return;
+  }
+
+  const backdated = new Date();
+  backdated.setFullYear(backdated.getFullYear() - RANDOM_PICK_BACKDATE_YEARS);
+  data.createdAt = backdated;
+  data.updatedAt = backdated;
 }
 
 /**
